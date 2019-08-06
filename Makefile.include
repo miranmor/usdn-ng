@@ -69,7 +69,7 @@ ifneq ("$(wildcard project-conf.h)","")
 CFLAGS += -DPROJECT_CONF_PATH=\"project-conf.h\"
 endif
 
-MODULES += os/net os/net/mac os/net/mac/framer os/net/routing os/storage
+MODULES += os/net os/net/mac os/net/mac/framer os/net/routing os/net/sdn os/storage
 
 define oname
 ${patsubst %.c,%.o, \
@@ -202,6 +202,18 @@ endif
 
 ifeq ($(WITH_IP64),1)
   MODULES += os/services/ip64
+endif
+
+# Configure SDN layer
+MAKE_SDN_NONE = 0
+MAKE_SDN_USDN = 1
+ifeq ($(MAKE_SDN),MAKE_SDN_USDN)
+  CFLAGS += -DUIP_CONF_IPV6_SDN=1
+  CFLAGS += -DSDN_CONF_WITH_USDN=1
+  MODULES += os/net/sdn/usdn
+else
+  CFLAGS += -DUIP_CONF_IPV6_SDN=0
+  CFLAGS += -DSDN_CONF_WITH_USDN=0
 endif
 
 # Configure Routing protocol
